@@ -32,7 +32,7 @@ void Name_value::addname(Name_value nvp)
     name_value_pairs.push_back(nvp);
 };
 
-//  #6
+//  #6 - sentence grammar checker
 
 
 vector<string> articles {
@@ -54,6 +54,60 @@ vector<string> verbs {
 bool sentenceFlag = true;
 
 void checkSentence(string word);
+
+
+
+//  #9 - char to int problem functions
+
+int charToInt(char input) {
+    return input - '0';
+}
+
+//  #10 - Permutations and combinations functions
+
+int factorial(int num) {
+    if (num == 0) {
+        return 1;
+    }
+    else {
+        for (int i = num; i > 0; --i) {
+            if (i > 1) num *= i-1;
+//            cout<<"num in f: "<<num<<endl;
+        }
+//        cout<<"num in res: "<<num<<endl;
+        return num;
+    }
+}
+
+int divide(int a, int b) {
+    if (b == 0) throw runtime_error("Cannot divide by zero");
+    return a/b;
+}
+
+int permutation(int a, int b)
+{
+    int numeratorFactorial = factorial(a);
+    int denomFactorial = factorial((a-b));
+    
+    int perm = divide(numeratorFactorial, denomFactorial);
+    
+    if (perm <= a || perm <= b) throw runtime_error("Calculation issue--potential integer overload");
+    
+    return perm;
+}
+
+int combination(int a, int b) {
+    int numeratorPerm = permutation(a, b);
+    int denomFactorial = factorial(b);
+    
+    int comb = divide(numeratorPerm, denomFactorial);
+    
+    if (comb <= a || comb <= b) throw runtime_error("Calculation issue--potential integer overload");
+    
+    return comb;
+}
+
+
 
 int main() {
 //    #19 - Name and age exercise modified for ch 6 ex 4
@@ -101,73 +155,220 @@ int main() {
 //    if (sentenceFlag) cout<<"Is a sentence\n";
 //    else if (!sentenceFlag) cout<<"Is not a sentence\n";
 
-//  #8 - Bulls and cows
+//  #8 - Bulls and cows but for letters
     
-    vector<int> key;
-    vector<int> guess;
-    int usrGuess = 0;
-
-    bool perfectMatch = false;
-    bool endGame = true;
-
-    int seed = 0;
-
-    while (true) {
-        if (endGame) {
-            endGame = false;
-            cout<<"Please roll for a random set of numbers by entering any number here: ";
-            cin>>seed;
-
-            key.clear();
-            for (int i = 0; i < 4; ++i) {
-                key.push_back(randint(seed));
+//    string key = "";
+//    string usrGuess = "";
+//
+//    bool perfectMatch = false;
+//    bool endGame = true;
+//
+//    int seed = 0;
+//
+//    while (true) {
+//        if (endGame) {
+//            endGame = false;
+//            cout<<"Please roll for a random set of numbers by entering any number here: ";
+//            cin>>seed;
+//
+//            for (int i = 0; i < 4; ++i) {
+//                char letter = 97 + randint(seed);
+//                key.push_back(letter);
+//            }
+//        }
+//
+//        bool mismatchDetected = false;
+//        int bullCount = 0;
+//        int cowCount = 0;
+//
+//        cout<<"Please attempt to guess the 4 letta word (must be in order): ";
+//        cin>>usrGuess;
+//
+//        for (int i = 0; i < key.size(); ++i) {
+//
+//            //      If position and digit are correct
+//            if (usrGuess[i] == key[i]) {
+//                bullCount += 1;
+//                if (i == (key.size()-1.0) && !mismatchDetected) perfectMatch = true;
+//            } else {
+//                mismatchDetected = true;
+//                for (char letter : usrGuess) {
+//                    if (letter == key[i]) {
+//                        cowCount += 1;
+//                    }
+//                }
+//            }
+//        }
+//
+//        if (perfectMatch) {
+//            cout<<bullCount<<" correct guesses - Perfect score!\n";
+//            endGame = true;
+//        }
+//        else {
+//            cout<<bullCount<<" bulls and "<<cowCount<<" cows.\n";
+//            usrGuess = "";
+//        }
+//    }
+    
+//    #9 - Messing around with char int conversion
+    
+//    cout<<"Please enter a 1-4 digit number"<<endl;
+//    string usrInput;
+//    cin>>usrInput;
+//    
+//    int fullUsrInt = 0;
+//    
+//    int ones = 0;
+//    int tens = 0;
+//    int hundreds = 0;
+//    int thousands = 0;
+//    
+//    switch (usrInput.size()) {
+//        case 1: {
+//            int newInt = charToInt(usrInput[0]);
+//            cout<<newInt<<" is "<<newInt<<" ones."<<endl;
+//            break;
+//        }
+//        case 2: {
+//            cout<<"Size: "<<usrInput.size()<<endl;
+//            for (long i = usrInput.size(); i > 0; --i) {
+//                cout<<"i: "<<i<<endl;
+//                switch (i) {
+//                    case 2: {
+//                        ones = charToInt(usrInput[i-1]);
+//                        fullUsrInt += ones * 1;
+//                        break;
+//                    }
+//                    case 1: {
+//                        tens = charToInt(usrInput[i-1]);
+//                        fullUsrInt += tens * 10;
+//                        break;
+//                    }
+//                    default:
+//                        break;
+//                }
+//            }
+//            
+//            cout<<fullUsrInt<<" is "<<tens<<" tens and "<<ones<<" ones."<<endl;
+//        }
+//            break;
+//        case 3: {
+//            for (long i = usrInput.size(); i > 0; --i) {
+//                switch (i) {
+//                    case 3: {
+//                        ones = charToInt(usrInput[i-1]);
+//                        fullUsrInt += ones * 1;
+//                        break;
+//                    }
+//                    case 2: {
+//                        tens = charToInt(usrInput[i-1]);
+//                        fullUsrInt += tens * 10;
+//                        break;
+//                    }
+//                    case 1: {
+//                        hundreds = charToInt(usrInput[i-1]);
+//                        fullUsrInt += hundreds * 100;
+//                        break;
+//                    }
+//                    default:
+//                        break;
+//                }
+//            }
+//            
+//            cout<<fullUsrInt<<" is "<<hundreds<<" hundreds and "<<tens<<" tens and "<<ones<<" ones."<<endl;
+//        }
+//            break;
+//        case 4: {
+//            for (long i = usrInput.size(); i > 0; --i)
+//            {
+//                switch (i) {
+//                    case 4: {
+//                        ones = charToInt(usrInput[i-1]);
+//                        fullUsrInt += ones * 1;
+//                        break;
+//                    }
+//                    case 3: {
+//                        tens = charToInt(usrInput[i-1]);
+//                        fullUsrInt += tens * 10;
+//                        break;
+//                    }
+//                    case 2: {
+//                        hundreds = charToInt(usrInput[i-1]);
+//                        fullUsrInt += hundreds * 100;
+//                        break;
+//                    }
+//                    case 1: {
+//                        thousands = charToInt(usrInput[i-1]);
+//                        fullUsrInt += thousands * 1000;
+//                        break;
+//                    }
+//                    default:
+//                        break;
+//                }
+//            }
+//            
+//            cout<<fullUsrInt<<" is "<<thousands<<" thousands and "<<hundreds<<" hundreds and "<<tens<<" tens and "<<ones<<" ones."<<endl;
+//        }
+//            break;
+//            
+//        default:
+//            break;
+//    }
+    
+    
+    
+//    #10 - Permutations and combinations
+    
+    
+    try {
+        cout<<"Do you want to calculate a permutation or a combination? (respond 'p' or 'c'): ";
+        char calcType = ' ';
+        cin>>calcType;
+        
+        switch (calcType) {
+            case 'p': {
+                cout<<"Please enter the two numbers for your permuatation: ";
+                int a;
+                int b;
+                cin>>a>>b;
+                
+                int ans = permutation(a, b);
+                cout<<"P: "<<ans<<endl;
+                break;
             }
-        }
-
-        bool mismatchDetected = false;
-        int bullCount = 0;
-        int cowCount = 0;
-
-        cout<<"Please attempt to guess the 4 digit number (must be in order): ";
-        cin>>usrGuess;
-
-
-        //  Converts guess to vector
-        while (usrGuess)
-        {
-            //      Get last digit
-            int lastDigit = usrGuess%10;
-
-            //      Add to vector for inputted guess
-            guess.push_back(lastDigit);
-
-            //      Remove last digit from answer
-            usrGuess /= 10;
-        }
-
-        for (int i = 0; i < key.size(); ++i) {
-            int guessDigit = guess[((guess.size()-1.0)-i)];
-
-            //      If position and digit are correct
-            if (guessDigit == key[i]) {
-                bullCount += 1;
-                if (i == (key.size()-1.0) && !mismatchDetected) perfectMatch = true;
-            } else {
-                mismatchDetected = true;
-                for (int keyDigit : key) {
-                    if (keyDigit == guessDigit) {
-                        cowCount += 1;
-                    }
-                }
+            case 'c': {
+                cout<<"Please enter the two numbers for your combination: ";
+                int a;
+                int b;
+                cin>>a>>b;
+                
+                int ans = combination(a, b);
+                cout<<"C: "<<ans<<endl;
+                break;
             }
+            default:
+                throw runtime_error("Invalid calculation type");
+                break;
         }
-
-        if (perfectMatch) {
-            cout<<bullCount<<" correct guesses - Perfect score!\n";
-            endGame = true;
-        }
-        else cout<<bullCount<<" bulls and "<<cowCount<<" cows.\n";
+    } catch (exception& e) {
+        cerr << "error: " << e.what() << '\n';
+        keep_window_open();
+        return 1;
     }
+    catch (...) {
+        cerr << "Oops: unknown exception!\n";
+        keep_window_open();
+        return 2;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
 
 

@@ -369,132 +369,132 @@ int main(void) {
 
 //    #12 & 13- Bulls and cows
     
-//    vector<int> key;
-//    vector<int> guess;
-//    int usrGuess = 0;
-//    
-//    bool perfectMatch = false;
-//    bool endGame = true;
-//    
-//    int seed = 0;
-//    
-//    while (true) {
-//        if (endGame) {
-//            endGame = false;
-//            cout<<"Please roll for a random set of numbers by entering any number here: ";
-//            cin>>seed;
-//            
-//            key.clear();
-//            for (int i = 0; i < 4; ++i) {
-//                key.push_back(randint(seed));
-//            }
-//        }
-//        
-//        bool mismatchDetected = false;
-//        int bullCount = 0;
-//        int cowCount = 0;
-//        
-//        cout<<"Please attempt to guess the 4 digit number (must be in order): ";
-//        cin>>usrGuess;
-//        
-//        
-//        //  Converts guess to vector
-//        while (usrGuess)
-//        {
-//            //      Get last digit
-//            int lastDigit = usrGuess%10;
-//            
-//            //      Add to vector for inputted guess
-//            guess.push_back(lastDigit);
-//            
-//            //      Remove last digit from answer
-//            usrGuess /= 10;
-//        }
-//        
-//        for (int i = 0; i < key.size(); ++i) {
-//            int guessDigit = guess[((guess.size()-1.0)-i)];
-//            
-//            //      If position and digit are correct
-//            if (guessDigit == key[i]) {
-//                bullCount += 1;
-//                if (i == (key.size()-1.0) && !mismatchDetected) perfectMatch = true;
-//            } else {
-//                mismatchDetected = true;
-//                for (int keyDigit : key) {
-//                    if (keyDigit == guessDigit) {
-//                        cowCount += 1;
-//                    }
-//                }
-//            }
-//        }
-//        
-//        if (perfectMatch) {
-//            cout<<bullCount<<" correct guesses - Perfect score!\n";
-//            endGame = true;
-//        }
-//        else cout<<bullCount<<" bulls and "<<cowCount<<" cows.\n";
-//    }
+    vector<int> key;
+    vector<int> guess;
+    int usrGuess = 0;
+    
+    bool perfectMatch = false;
+    bool endGame = true;
+    
+    int seed = 0;
+    
+    while (true) {
+        if (endGame) {
+            endGame = false;
+            cout<<"Please roll for a random set of numbers by entering any number here: ";
+            cin>>seed;
+            
+            key.clear();
+            for (int i = 0; i < 4; ++i) {
+                key.push_back(randint(seed));
+            }
+        }
+        
+        bool mismatchDetected = false;
+        int bullCount = 0;
+        int cowCount = 0;
+        
+        cout<<"Please attempt to guess the 4 digit number (must be in order): ";
+        cin>>usrGuess;
+        
+        
+        //  Converts guess to vector
+        while (usrGuess)
+        {
+            //      Get last digit
+            int lastDigit = usrGuess%10;
+            
+            //      Add to vector for inputted guess
+            guess.push_back(lastDigit);
+            
+            //      Remove last digit from answer
+            usrGuess /= 10;
+        }
+        
+        for (int i = 0; i < key.size(); ++i) {
+            int guessDigit = guess[((guess.size()-1.0)-i)];
+            
+            //      If position and digit are correct
+            if (guessDigit == key[i]) {
+                bullCount += 1;
+                if (i == (key.size()-1.0) && !mismatchDetected) perfectMatch = true;
+            } else {
+                mismatchDetected = true;
+                for (int keyDigit : key) {
+                    if (keyDigit == guessDigit) {
+                        cowCount += 1;
+                    }
+                }
+            }
+        }
+        
+        if (perfectMatch) {
+            cout<<bullCount<<" correct guesses - Perfect score!\n";
+            endGame = true;
+        }
+        else cout<<bullCount<<" bulls and "<<cowCount<<" cows.\n";
+    }
 
     
     
 //    #14 - Days of the week
     
-    vector<string> dayList;
-    vector<int> donutList;
-    
-    vector<string> validDays = {"Monday", "monday", "MON", "Mon", "mon", "Tuesday", "tuesday", "TUE", "Tue", "tue", "Wednesday", "wednesday", "WED", "Wed", "wed", "Thursday", "thursday", "THU", "Thu", "thu", "Friday", "friday", "FRI", "Fri", "fri", "Saturday", "saturday", "SAT", "Sat", "sat", "Sunday", "sunday", "SUN", "Sun", "sun"};
-    
-    int invalidDaysQty = 0;
-    
-//    int dayValSum = 0; -- What is this? Does he want me to add the int values of the strings? Actually that could make sense, they could be fed into a sorting algorithm then maybe? Except the days of the week aren't in alphabetical order, a different algorithm not relying on this would be more practical perhaps?
-    
-    int donutValSum = 0;
-    
-    string enteredDay = "";
-    int donutQty = 0;
-        
-    while (static_cast<void>(cout<<"Please enter a day of the week (enter | to quit): "), cin>>enteredDay) {
-        try {
-            bool dayIsValid = false;
-            
-            for (string day : validDays) {
-                if (day == enteredDay) {
-                    dayIsValid = true;
-                }
-            }
-            
-            if (dayIsValid) {
-                cout<<"Now please enter a corresponding integer: ";
-                cin>>donutQty;
-                
-                dayList.push_back(enteredDay);
-                donutList.push_back(donutQty);
-                
-            }
-            else {
-                if (enteredDay == "|") break;
-                invalidDaysQty += 1;
-                cerr<<"Invalid day name - Please enter a valid day: \n";
-                continue;
-            }
-        } catch (runtime_error& e) {
-            cerr<<"error: "<<e.what()<<'\n';
-            return 1;
-        }
-    }
-    
-
-    
-    for (int i = 0; i < dayList.size(); ++i) {
-        string day = dayList[i];
-        
-        int count = donutList[i];
-        donutValSum += count;
-        
-        cout<<day<<": "<<count<<'\n';
-    }
-    
-    cout<<invalidDaysQty<<" invalid days entered.\n";
+//    vector<string> dayList;
+//    vector<int> donutList;
+//    
+//    vector<string> validDays = {"Monday", "monday", "MON", "Mon", "mon", "Tuesday", "tuesday", "TUE", "Tue", "tue", "Wednesday", "wednesday", "WED", "Wed", "wed", "Thursday", "thursday", "THU", "Thu", "thu", "Friday", "friday", "FRI", "Fri", "fri", "Saturday", "saturday", "SAT", "Sat", "sat", "Sunday", "sunday", "SUN", "Sun", "sun"};
+//    
+//    int invalidDaysQty = 0;
+//    
+// //    int dayValSum = 0; -- What is this? Does he want me to add the int values of the strings? Actually that could make sense, they could be fed into a sorting algorithm then maybe? Except the days of the week aren't in alphabetical order, a different algorithm not relying on this would be more practical perhaps?
+//
+//    int donutValSum = 0;
+//    
+//    string enteredDay = "";
+//    int donutQty = 0;
+//        
+//    while (static_cast<void>(cout<<"Please enter a day of the week (enter | to quit): "), cin>>enteredDay) {
+//        try {
+//            bool dayIsValid = false;
+//            
+//            for (string day : validDays) {
+//                if (day == enteredDay) {
+//                    dayIsValid = true;
+//                }
+//            }
+//            
+//            if (dayIsValid) {
+//                cout<<"Now please enter a corresponding integer: ";
+//                cin>>donutQty;
+//                
+//                dayList.push_back(enteredDay);
+//                donutList.push_back(donutQty);
+//                
+//            }
+//            else {
+//                if (enteredDay == "|") break;
+//                invalidDaysQty += 1;
+//                cerr<<"Invalid day name - Please enter a valid day: \n";
+//                continue;
+//            }
+//        } catch (runtime_error& e) {
+//            cerr<<"error: "<<e.what()<<'\n';
+//            return 1;
+//        }
+//    }
+//    
+//
+//    
+//    for (int i = 0; i < dayList.size(); ++i) {
+//        string day = dayList[i];
+//        
+//        int count = donutList[i];
+//        donutValSum += count;
+//        
+//        cout<<day<<": "<<count<<'\n';
+//    }
+//    
+//    cout<<invalidDaysQty<<" invalid days entered.\n";
 
 }
 
