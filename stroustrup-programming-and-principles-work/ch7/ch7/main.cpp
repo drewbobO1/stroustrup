@@ -7,6 +7,17 @@
 
 //#include <iostream>
 #include "std_lib_facilities.h"
+//#include "stdlib.h"
+
+double val = 0;
+const char quit = 'q';
+const char print = ';';
+const string prompt = "> ";
+const string result = "= ";
+const char name = 'a';
+const char let = 'l';
+const string declkey = "let";
+
 
 //------------------------------------------------------------------------------
 
@@ -14,10 +25,13 @@ class Token{
 public:
     char kind;        // what kind of token
     double value;     // for numbers: a value
+    string name;
     Token(char ch)    // make a Token from a char
-        :kind(ch), value(0) { }
+        :kind{ch} { }
     Token(char ch, double val)     // make a Token from a char and a double
-        :kind(ch), value(val) { }
+        :kind{ch}, value{val} { }
+    Token(char ch, string n)
+        :kind{ch}, name{n} { }
 };
 
 //------------------------------------------------------------------------------
@@ -27,12 +41,58 @@ public:
     Token_stream();   // make a Token_stream that reads from cin
     Token get();      // get a Token (get() is defined elsewhere)
     void putback(Token t);    // put a Token back
+    void ignore(char c);
 private:
     bool full {false};        // is there a Token in the buffer?
     Token buffer;     // here is where we keep a Token put back using putback()
 };
 
 //------------------------------------------------------------------------------
+
+class Variable {
+public:
+    string name;
+    double value;
+    
+//    Variable(string givenName, double givenValue) {
+//        this->name = givenName;
+//        this->value = givenValue;
+//    }
+    Variable(string givenName, double givenValue)
+        :name(givenName), value(givenValue) { }
+    
+
+};
+
+//------------------------------------------------------------------------------
+
+vector <Variable> var_table;
+
+//------------------------------------------------------------------------------
+
+double get_value(string s)
+{
+    cout<<"s (input arg to get_value): "<<s<<endl;
+    for (const Variable& v : var_table) {
+        cout<<"v.name: "<<v.name<<endl;
+        if (v.name==s) return v.value;
+    }
+    error("get: undefined variable ", s);
+    return 1;
+}
+
+void set_value(string s, double d)
+{
+    for (Variable& v : var_table)
+        if (v.name==s) {
+            v.value = d;
+            return;
+        }
+    error("set: undefined variable ", s);
+}
+
+//------------------------------------------------------------------------------
+
 
 // The constructor just sets full to indicate that the buffer is empty:
 Token_stream::Token_stream()
@@ -60,8 +120,9 @@ const char number = '8';
 //------------------------------------------------------------------------------
 
 Token Token_stream::get()
+//  Read characters from cin and compose/make a Token
 {
-    if (full) {       // do we already have a Token ready?
+    if (full) {       // check if we already have a Token ready
         // remove token from buffer
 //        buffer =
         full = false;
@@ -72,9 +133,19 @@ Token Token_stream::get()
     cin >> ch;    // note that >> skips whitespace (space, newline, tab, etc.)
 
     switch (ch) {
-    case '=':    // for "print"
-    case 'x':    // for "quit"
-    case '(': case ')': case '{': case '}':  case '+': case '-': case '*': case '/': case '!':
+    case quit:
+    case print:
+    case '(': 
+    case ')': 
+    case '{':
+    case '}':
+    case '+':
+    case '-':
+    case '*':
+    case '/':
+    case '!':
+    case '%':
+    case '=':
         return Token(ch);        // let each character represent itself
     case '.':
     case '0': case '1': case '2': case '3': case '4':
@@ -86,9 +157,35 @@ Token Token_stream::get()
         return Token(number, val);   // let '8' represent "a number"
     }
     default:
+            if (isalpha(ch)) {
+                cin.putback(ch);
+                string s;
+                cin >> s;
+                if (s == declkey) return Token(let);
+//                if (s == name) return Token(name);
+                return Token{name,s};
+            }
         error("Bad token");
         return Token(' ');
     }
+}
+
+void Token_stream::ignore(char c)
+{
+    if (full && c==buffer.kind) {
+        full = false;
+        return;
+    }
+    full = false;
+    
+    char ch = 0;
+    while (cin>>ch)
+        if (ch==c) return;
+}
+
+void clean_up_mess()
+{
+    ts.ignore(print);
 }
 
 int factorial(int num) {
@@ -106,16 +203,60 @@ int factorial(int num) {
 }
 
 
-double expression();    // declaration so that primary() can call expression()
-
-
-
 //------------------------------------------------------------------------------
+
+double declaration();
+double expression();    // declaration so that statement() and primary() can call expression()
+
+double statement()
+{
+    Token t = ts.get();
+    switch (t.kind) {
+        case let:
+            cout<<"Triggered the 'let' case"<<endl;
+            return declaration();
+        default:
+            ts.putback(t);
+            return expression();
+    }
+}
+
+bool is_declared(string var)
+{
+    for (const Variable& v : var_table) {
+        if (var == v.name) return true;
+    }
+    return false;
+}
+
+double define_name(string var, double val)
+{
+    if (is_declared(var)) error(var, "declared twice");
+    var_table.push_back(Variable(var, val));
+    return val;
+}
+
+double declaration()
+{
+    Token t = ts.get();
+    if (t.kind != name) error("name expected in declaration");
+    cout<<"Name was detected: "<<t.name<<endl;
+    string var_name = t.name;
+    
+    Token t2 = ts.get();
+    cout<<"t2 should be '=': "<<t2.kind<<endl;
+    if (t2.kind != '=') error("= missing in declaration of ", var_name);
+    
+    double d = expression();
+    define_name(var_name,d);
+    return d;
+}
 
 // deal with numbers and parentheses
 double primary()
 {
     Token t = ts.get();
+//    if (isalpha(t.kind))
     switch (t.kind) {
     case '{':
     {
@@ -152,7 +293,19 @@ double primary()
         return - primary();
     case '+':
         return primary();
+//    case '=':
+//        return primary();
     default:
+        cout<<"t.kind: "<<t.name<<endl;
+        if (isalpha(t.kind)) {
+            cout<<"TOP: t.name: "<<t.name<<endl;
+            string name = t.name;
+//            cout<<"name: "<<name<<endl;
+            double val = get_value(t.name);
+//            cout<<"t.value: "<<t.value<<endl;
+            cout<<"BTM: val: "<<val<<endl;
+            return val;
+        }
         error("primary expected");
         return 1;
     }
@@ -164,6 +317,7 @@ double primary()
 double term()
 {
     double left = primary();
+    cout<<"Left primary call in term func: "<<left<<endl;
     Token t = ts.get();        // get the next token from token stream
 
     while (true) {
@@ -215,18 +369,15 @@ double expression()
             left -= term();    // evaluate Term and subtract
             t = ts.get();
             break;
+//        case '=':
+//            left = expression();
+            
         default:
             ts.putback(t);     // put t back into the token stream
             return left;       // finally: no more + or -: return the answer
         }
     }
 }
-
-double val = 0;
-const char quit = 'q';
-const char print = ';';
-const string prompt = "> ";
-const string result = "= ";
 
 void calculate()
 {
@@ -237,7 +388,7 @@ void calculate()
         while (t.kind == print) t = ts.get();
         if (t.kind == quit) return;
         ts.putback(t);
-        cout << result << expression() << '\n';
+        cout << result << statement() << '\n';
     }
 }
 
