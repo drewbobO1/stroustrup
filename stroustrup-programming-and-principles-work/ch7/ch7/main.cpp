@@ -72,9 +72,9 @@ vector <Variable> var_table;
 
 double get_value(string s)
 {
-    cout<<"s (input arg to get_value): "<<s<<endl;
+//    cout<<"s (input arg to get_value): "<<s<<endl;
     for (const Variable& v : var_table) {
-        cout<<"v.name: "<<v.name<<endl;
+//        cout<<"v.name: "<<v.name<<endl;
         if (v.name==s) return v.value;
     }
     error("get: undefined variable ", s);
@@ -213,7 +213,7 @@ double statement()
     Token t = ts.get();
     switch (t.kind) {
         case let:
-            cout<<"Triggered the 'let' case"<<endl;
+//            cout<<"Triggered the 'let' case"<<endl;
             return declaration();
         default:
             ts.putback(t);
@@ -240,11 +240,11 @@ double declaration()
 {
     Token t = ts.get();
     if (t.kind != name) error("name expected in declaration");
-    cout<<"Name was detected: "<<t.name<<endl;
+//    cout<<"Name was detected: "<<t.name<<endl;
     string var_name = t.name;
     
     Token t2 = ts.get();
-    cout<<"t2 should be '=': "<<t2.kind<<endl;
+//    cout<<"t2 should be '=': "<<t2.kind<<endl;
     if (t2.kind != '=') error("= missing in declaration of ", var_name);
     
     double d = expression();
@@ -286,7 +286,7 @@ double primary()
         } else {
             ts.putback(t);
         }
-        cout<<"result: "<<result<<endl;
+//        cout<<"result: "<<result<<endl;
         return result;  // return the number's value
     }
     case '-':
@@ -296,14 +296,14 @@ double primary()
 //    case '=':
 //        return primary();
     default:
-        cout<<"t.kind: "<<t.name<<endl;
+//        cout<<"t.kind: "<<t.name<<endl;
         if (isalpha(t.kind)) {
-            cout<<"TOP: t.name: "<<t.name<<endl;
+//            cout<<"TOP: t.name: "<<t.name<<endl;
             string name = t.name;
 //            cout<<"name: "<<name<<endl;
             double val = get_value(t.name);
 //            cout<<"t.value: "<<t.value<<endl;
-            cout<<"BTM: val: "<<val<<endl;
+//            cout<<"BTM: val: "<<val<<endl;
             return val;
         }
         error("primary expected");
@@ -317,7 +317,7 @@ double primary()
 double term()
 {
     double left = primary();
-    cout<<"Left primary call in term func: "<<left<<endl;
+//    cout<<"Left primary call in term func: "<<left<<endl;
     Token t = ts.get();        // get the next token from token stream
 
     while (true) {
